@@ -2,8 +2,6 @@ from controllers.database import db
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
-db = SQLAlchemy()
-
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
@@ -12,11 +10,15 @@ class User(db.Model):
     full_name = db.Column(db.String(120), nullable=False)
     qualification = db.Column(db.String(120))
     dob = db.Column(db.Date)
+
     is_admin = db.Column(db.Boolean, default=False)
+
     scores = db.relationship('Score', backref='user', lazy=True)
 
     def __repr__(self):
-        return f"User('{self.username}', '{self.full_name}', '{self.is_admin}')"
+        return f"User('{self.username}', is_admin={self.is_admin})"
+
+# The rest of your models: Subject, Chapter, Quiz, Question, Score remain unchanged
 
 class Subject(db.Model):
     __tablename__ = 'subjects'

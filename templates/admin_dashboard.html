@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">QUIZ MASTER - Admin</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" 
+          data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <!-- Link to quiz.html, summary.html, logout route -->
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('quiz') }}">Quiz</a>
+        <!-- If you haven't created a route named 'quiz' yet, you can adjust or remove -->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('summary') }}">Summary</a>
+        <!-- If you haven't created a route named 'summary' yet, you can adjust or remove -->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h2>Welcome Admin</h2>
+  
+  <!-- Display All Subjects -->
+  <h4>Available Subjects</h4>
+  <ul class="list-group mb-3">
+    {% for subject in subjects %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+      <div>
+        <strong>{{ subject.name }}</strong> - {{ subject.description or '' }}
+      </div>
+      <div>
+        <!-- Link to manage chapters -->
+        <a href="{{ url_for('admin_chapters', subject_id=subject.id) }}" 
+           class="btn btn-sm btn-info mr-2">
+          Chapters
+        </a>
+        <!-- Delete subject form -->
+        <form method="POST" action="{{ url_for('delete_subject', subject_id=subject.id) }}" 
+              style="display:inline;">
+          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Form to Add a New Subject -->
+  <h4>Add New Subject</h4>
+  <form method="POST" action="{{ url_for('add_subject') }}">
+    <div class="form-group">
+      <label for="subjectName">Name</label>
+      <input type="text" name="name" id="subjectName" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="subjectDesc">Description</label>
+      <textarea name="description" id="subjectDesc" class="form-control"></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+  </form>
+</div>
+{% endblock %}
