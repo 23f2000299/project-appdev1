@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Overview{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="quiz-overview">
+  <h2>Quiz Management</h2>
+  {% for subject in subjects %}
+    <div class="card mb-3">
+      <div class="card-header">
+        <h4>Subject: {{ subject.name }}</h4>
+      </div>
+      <div class="card-body">
+        {% if subject.chapters %}
+          {% for chapter in subject.chapters %}
+            <div class="mb-4">
+              <h5>Chapter: {{ chapter.name }}</h5>
+              <p>{{ chapter.description or '' }}</p>
+
+              <!-- List quizzes for this chapter -->
+              {% if chapter.quizzes %}
+                <ul class="list-group mb-2">
+                  {% for quiz in chapter.quizzes %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <div>
+                        <strong>Date:</strong>
+                        {% if quiz.date_of_quiz %}
+                          {{ quiz.date_of_quiz.strftime('%Y-%m-%d') }}
+                        {% endif %}
+                        | <strong>Duration:</strong> {{ quiz.time_duration }}
+                        | <strong>Remarks:</strong> {{ quiz.remarks }}
+                      </div>
+                      <div>
+                        <!-- Link to manage questions for this quiz -->
+                        <a href="{{ url_for('admin_questions', quiz_id=quiz.id) }}"
+                           class="btn btn-sm btn-info mr-2">Questions</a>
+                        <!-- Delete quiz form -->
+                        <form method="POST" action="{{ url_for('delete_quiz', quiz_id=quiz.id) }}"
+                              style="display:inline;">
+                          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p>No quizzes in this chapter.</p>
+              {% endif %}
+
+              <!-- Form to add a new quiz to this chapter -->
+              <form method="POST" action="{{ url_for('add_quiz', chapter_id=chapter.id) }}" class="form-inline">
+                <input type="text" name="date_of_quiz" class="form-control mb-2 mr-sm-2"
+                       placeholder="YYYY-MM-DD" required>
+                <input type="text" name="time_duration" class="form-control mb-2 mr-sm-2"
+                       placeholder="HH:MM" required>
+                <input type="text" name="remarks" class="form-control mb-2 mr-sm-2"
+                       placeholder="Remarks">
+                <button type="submit" class="btn btn-success mb-2">Add Quiz</button>
+              </form>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>No chapters for this subject.</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+</div>
+{% endblock %}

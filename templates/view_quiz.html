@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}View Quiz Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Quiz Details</h2>
+  <p><strong>Subject:</strong> {{ quiz.chapter.subject.name }}</p>
+  <p><strong>Chapter:</strong> {{ quiz.chapter.name }}</p>
+  <p><strong>Date:</strong> {{ quiz.date_of_quiz.strftime('%Y-%m-%d') if quiz.date_of_quiz else 'N/A' }}</p>
+  <p><strong>Duration:</strong> {{ quiz.time_duration }}</p>
+  <p><strong>Remarks:</strong> {{ quiz.remarks or 'None' }}</p>
+  <a href="{{ url_for('start_quiz', quiz_id=quiz.id) }}" class="btn btn-primary">Start Quiz</a>
+  <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

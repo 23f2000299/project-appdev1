@@ -14,7 +14,7 @@
     <ul class="navbar-nav ml-auto">
       <!-- Link to quiz.html, summary.html, logout route -->
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('quiz') }}">Quiz</a>
+        <a class="nav-link" href="{{ url_for('admin_quiz_overview') }}">Quiz</a>
         <!-- If you haven't created a route named 'quiz' yet, you can adjust or remove -->
       </li>
       <li class="nav-item">
@@ -30,43 +30,73 @@
 
 <div class="container mt-4">
   <h2>Welcome Admin</h2>
-  
+  <hr>
   <!-- Display All Subjects -->
-  <h4>Available Subjects</h4>
-  <ul class="list-group mb-3">
-    {% for subject in subjects %}
-    <li class="list-group-item d-flex justify-content-between align-items-center">
-      <div>
-        <strong>{{ subject.name }}</strong> - {{ subject.description or '' }}
-      </div>
-      <div>
-        <!-- Link to manage chapters -->
-        <a href="{{ url_for('admin_chapters', subject_id=subject.id) }}" 
-           class="btn btn-sm btn-info mr-2">
-          Chapters
-        </a>
-        <!-- Delete subject form -->
-        <form method="POST" action="{{ url_for('delete_subject', subject_id=subject.id) }}" 
-              style="display:inline;">
-          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-        </form>
-      </div>
-    </li>
-    {% endfor %}
-  </ul>
+  <div class="mb-4">
+    <div class="card shadow p-4">
+      <h4 class="mb-3">Available Subjects</h4>
+      <ul class="list-group">
+        {% for subject in subjects %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ subject.name }}</strong>
+            <br>
+            <pre>Number Of Chapters:{{ subject.description or '' }}</pre>
+          </div>
+          <div>
+            <a href="{{ url_for('admin_chapters', subject_id=subject.id) }}" 
+               class="btn btn-sm btn-info mr-2">Chapters</a>
+            <!-- Edit link to reveal inline edit form -->
+            <a href="#edit-{{ subject.id }}" class="btn btn-sm btn-secondary mr-2">Edit</a>
+            <!-- Delete subject form -->
+            <form method="POST" action="{{ url_for('delete_subject', subject_id=subject.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+            </form>
+          </div>
+        </li>
 
-  <!-- Form to Add a New Subject -->
-  <h4>Add New Subject</h4>
-  <form method="POST" action="{{ url_for('add_subject') }}">
-    <div class="form-group">
-      <label for="subjectName">Name</label>
-      <input type="text" name="name" id="subjectName" class="form-control" required>
+        <!-- Inline edit form for THIS subject -->
+        <div id="edit-{{ subject.id }}" class="edit-form">
+          <form method="POST" action="{{ url_for('edit_subject', subject_id=subject.id) }}">
+            <div class="form-group">
+              <input type="text" name="name" value="{{ subject.name }}" 
+                     class="form-control mb-2" required>
+            </div>
+            <div class="form-group">
+              <textarea name="description" class="form-control mb-2" rows="3"
+                placeholder="Enter description">{{ subject.description }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Save Changes</button>
+            <!-- Cancel link removes the target by navigating to a non-existent fragment -->
+            <a href="#close" class="btn btn-sm btn-link">Cancel</a>
+          </form>
+        </div>
+        {% endfor %}
+      </ul>
+      {% if subjects|length == 0 %}
+        <p class="mt-3">No subjects available.</p>
+      {% endif %}
     </div>
-    <div class="form-group">
-      <label for="subjectDesc">Description</label>
-      <textarea name="description" id="subjectDesc" class="form-control"></textarea>
+  </div>
+
+  <!-- Add Subject Section -->
+  <div class="mb-4">
+    <div class="card shadow p-4">
+      <h4 class="mb-3">Add Subject</h4>
+      <form method="POST" action="{{ url_for('add_subject') }}">
+        <div class="form-group">
+          <label for="subjectName">Subject Name</label>
+          <input type="text" name="name" id="subjectName" class="form-control" placeholder="Enter subject name" required>
+        </div>
+        <div class="form-group">
+          <label for="subjectDesc">Number of chapters and description</label>
+          <textarea name="description" id="subjectDesc" class="form-control" rows="3"
+                    placeholder="Enter subject description"></textarea>
+          <small>mention number of chapter in first line and in the second the description</small>
+        </div>
+        <button type="submit" class="btn btn-success btn-block">Add Subject</button>
+      </form>
     </div>
-    <button type="submit" class="btn btn-success">Save</button>
-  </form>
+  </div>
 </div>
 {% endblock %}

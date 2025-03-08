@@ -1,0 +1,160 @@
+/* styles.css */
+
+/* Global Styles */
+body {
+    background-color: #DDF2FD;  /* Very light blue background */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #164863;  /* Primary dark blue text */
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background-color: #164863;  /* Dark blue navbar background */
+    border-bottom: 2px solid #9BBEC8;  /* Light blue accent border */
+  }
+  
+  .navbar .navbar-brand,
+  .navbar .nav-link {
+    color:#427D9D !important;  /* Very light blue text for contrast */
+    font-weight: bold;
+  }
+  
+  .navbar .nav-link:hover {
+    color: #427D9D !important;  /* Medium blue on hover */
+  }
+  
+  /* Containers */
+  .container {
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Cards */
+  .card {
+    background-color: #FFFFFF;
+    border: 1px solid #9BBEC8;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: #164863;
+    font-weight: bold;
+  }
+  
+  /* Form Controls */
+  .form-control {
+    border: 1px solid #9BBEC8;
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: none;
+  }
+  
+  .form-control:focus {
+    border-color: #427D9D;
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    background-color: #427D9D;
+    border-color: #427D9D;
+    color: #FFFFFF;
+  }
+  
+  .btn-primary:hover {
+    background-color: #9BBEC8;
+    border-color: #9BBEC8;
+  }
+  
+  .btn-success {
+    background-color: #427D9D;
+    border-color: #427D9D;
+    color: #FFFFFF;
+  }
+  
+  .btn-success:hover {
+    background-color: #9BBEC8;
+    border-color: #9BBEC8;
+  }
+  
+  /* Alerts */
+  .alert {
+    border-radius: 4px;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+  }
+  
+  .alert-success {
+    background-color: #9BBEC8;
+    color: #164863;
+    border: 1px solid #427D9D;
+  }
+  
+  .alert-danger {
+    background-color: #FFBCBC; /* Keeping a soft red if needed */
+    color: #721c24;
+    border: 1px solid #F38BA0;
+  }
+  
+  /* Footer */
+  footer {
+    background-color: #164863;
+    color: #DDF2FD;
+    padding: 15px 0;
+    text-align: center;
+    margin-top: 20px;
+  }
+  /* Box style for forms and content sections */
+.box {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Specific styling for quiz overview */
+.quiz-overview {
+  background-color: #f9f9f9;
+  border: 1px solid #9BBEC8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin: 20px 0;
+}
+
+/* Specific styling for questions container */
+.questions-container {
+  background-color: #f9f9f9;
+  border: 1px solid #9BBEC8;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+  margin: 20px 0;
+}
+.edit-form {
+  display: none;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+.edit-form:target {
+  display: block;
+}
+.edit-form {
+  display: none;
+  margin-top: 10px;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+/* Show the form when its ID is targeted in the URL (#edit-chapter-xxx or #edit-question-xxx) */
+.edit-form:target {
+  display: block;
+}

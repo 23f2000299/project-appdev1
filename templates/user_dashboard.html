@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">QUIZ MASTER - User</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" 
+          data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+          aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav ml-auto">
+      <!-- Home -->
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('user_dashboard') }}">Home</a>
+      </li>
+      <!-- Scores -->
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('user_scores') }}">Scores</a>
+      </li>
+      <!-- Summary -->
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('user_summary') }}">Summary</a>
+      </li>
+      <!-- Logout -->
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <h2>Upcoming Quizzes</h2>
+  <hr>
+  {% if quizzes %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Chapter</th>
+          <th>Date</th>
+          <th>Duration</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for quiz in quizzes %}
+        <tr>
+          <td>{{ quiz.chapter.subject.name }}</td>
+          <td>{{ quiz.chapter.name }}</td>
+          <td>{{ quiz.date_of_quiz.strftime('%Y-%m-%d') if quiz.date_of_quiz else '' }}</td>
+          <td>{{ quiz.time_duration }}</td>
+          <td>
+            <a href="{{ url_for('view_quiz_details', quiz_id=quiz.id) }}" class="btn btn-info btn-sm mr-2">View</a>
+            <a href="{{ url_for('start_quiz', quiz_id=quiz.id) }}" class="btn btn-primary btn-sm">Start</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No upcoming quizzes available.</p>
+  {% endif %}
+</div>
+{% endblock %}

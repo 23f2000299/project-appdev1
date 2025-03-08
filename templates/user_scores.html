@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Your Scores{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Your Scores</h2>
+  {% if scores %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Quiz ID</th>
+          <th>Subject</th>
+          <th>Chapter</th>
+          <th>Score</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for score in scores %}
+          <tr>
+            <td>{{ score.quiz.id }}</td>
+            <td>{{ score.quiz.chapter.subject.name }}</td>
+            <td>{{ score.quiz.chapter.name }}</td>
+            <td>{{ score.total_scored }}</td>
+            <td>{{ score.timestamp.strftime('%Y-%m-%d') }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You have not taken any quizzes yet.</p>
+  {% endif %}
+  <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}
