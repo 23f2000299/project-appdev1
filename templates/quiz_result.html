@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Quiz Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Quiz Results</h2>
+  <p>You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong>.</p>
+  
+  <h4>Feedback:</h4>
+  <ul class="list-group">
+    {% for question in quiz.questions %}
+      <li class="list-group-item">
+        <p><strong>Question {{ loop.index }}:</strong> {{ feedback[question.id].question_statement }}</p>
+        {% if feedback[question.id].is_correct %}
+          <p class="text-success"><strong>Correct!</strong></p>
+        {% else %}
+          <p class="text-danger"><strong>Incorrect.</strong></p>
+          <p>Your answer: 
+            {% if feedback[question.id].user_answer %}
+              {{ feedback[question.id].option_texts[feedback[question.id].user_answer] }}
+            {% else %}
+              Not answered
+            {% endif %}
+          </p>
+          <p>Correct answer: {{ feedback[question.id].option_texts[feedback[question.id].correct_option] }}</p>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

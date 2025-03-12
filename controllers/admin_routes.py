@@ -1,8 +1,12 @@
+import matplotlib
+matplotlib.use('Agg')  # Non-GUI backend
+import matplotlib.pyplot as plt
+import io, base64
 from flask import render_template, request, redirect, url_for, flash, session
 from controllers.database import db
-from controllers.models import Subject, Chapter, Quiz, Question
+from controllers.models import Subject, Chapter, Quiz, Question,User
 
-def init_admin_routes(app):
+def Admin_routes(app):
     @app.route('/admin/dashboard')
     def admin_dashboard():
         """Admin dashboard: Lists all subjects and provides add/delete."""
@@ -120,16 +124,97 @@ def init_admin_routes(app):
         db.session.commit()
         flash("Chapter deleted.", "info")
         return redirect(url_for('admin_chapters', subject_id=subject_id))
-
+    
+    @app.route('/admin/search')
+    def admin_search():
+        if 'user_id' not in session or session.get('role') != 'Admin':
+            flash("Access denied.", "danger")
+            return redirect(url_for('login'))
+        
+        query = request.args.get('q', '').strip()
+        results = {}
+        if query:
+            from controllers.models import User, Subject, Quiz, Question
+            # Search Users
+            results['users'] = User.query.filter(
+                (User.username.ilike(f'%{query}%')) | 
+                (User.full_name.ilike(f'%{query}%'))
+            ).all()
+            # Search Subjects
+            results['subjects'] = Subject.query.filter(
+                Subject.name.ilike(f'%{query}%')
+            ).all()
+            # Search Quizzes (example: by remarks)
+            results['quizzes'] = Quiz.query.filter(
+                Quiz.remarks.ilike(f'%{query}%')
+            ).all()
+            # Search Questions
+            results['questions'] = Question.query.filter(
+                Question.question_statement.ilike(f'%{query}%')
+            ).all()
+        else:
+            results = None
+        return render_template('admin_search.html', query=query, results=results)
     @app.route('/quiz')
     def quiz():
         # Placeholder for quiz page or logic
         return render_template('quiz.html')
 
-    @app.route('/summary')
-    def summary():
-        # Placeholder for summary page or logic
-        return render_template('summary.html')
+    @app.route('/admin/summary')
+    def admin_summary():
+        # Check if admin
+        if 'user_id' not in session or session.get('role') != 'Admin':
+            flash("Access denied.", "danger")
+            return redirect(url_for('login'))
+
+        # 1) Gather data for the chart (e.g., subject-wise distinct user attempts)
+        subjects = Subject.query.all()
+        subject_names = []
+        attempt_counts = []
+
+        for subj in subjects:
+            user_ids = set()
+            for chapter in subj.chapters:
+                for quiz in chapter.quizzes:
+                    for score in quiz.scores:
+                        user_ids.add(score.user_id)
+            subject_names.append(subj.name)
+            attempt_counts.append(len(user_ids))
+
+        # 2) Generate Matplotlib chart and save to static folder
+        plt.clf()  # Clear any existing figure
+        fig, ax = plt.subplots(figsize=(6,4))
+        ax.bar(subject_names, attempt_counts, color='skyblue')
+        ax.set_xlabel("Subjects")
+        ax.set_ylabel("Distinct Users Attempted")
+        ax.set_title("Subject-Wise Quiz Attempts")
+
+        # Save the chart as a static image (e.g., static/admin_summary.png)
+        chart_path = 'static/admin_summary.png'
+        plt.savefig(chart_path)
+        plt.close(fig)
+
+        # 3) Gather data for the table (e.g., user details: total quizzes attempted, total score)
+        user_summaries = []
+        users = User.query.filter_by(is_admin=False).all()
+        for user in users:
+            quiz_ids = set()
+            total_score = 0
+            for s in user.scores:
+                quiz_ids.add(s.quiz_id)
+                total_score += s.total_scored
+
+            user_summaries.append({
+                'username': user.username,
+                'full_name': user.full_name,
+                'total_quizzes': len(quiz_ids),
+                'total_score': total_score
+            })
+
+        # 4) Return template with both the chart and the table data
+        return render_template('admin_summary.html',
+                               chart_path=chart_path,
+                               user_summaries=user_summaries)
 
     @app.route('/logout')
     def logout():

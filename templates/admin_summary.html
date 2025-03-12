@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Admin Summary{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Admin Summary Report</h2>
+
+  <!-- 1) Display the chart -->
+  <div class="mb-4">
+    <img src="{{ url_for('static', filename='admin_summary.png') }}" 
+    alt="Admin Summary Chart" class="img-fluid">
+  </div>
+
+  <!-- 2) Display the table of user summaries -->
+  <h4>All Users - Quiz Details</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Full Name</th>
+        <th>Total Quizzes Attempted</th>
+        <th>Total Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for summary in user_summaries %}
+      <tr>
+        <td>{{ summary.username }}</td>
+        <td>{{ summary.full_name }}</td>
+        <td>{{ summary.total_quizzes }}</td>
+        <td>{{ summary.total_score }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}

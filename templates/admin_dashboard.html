@@ -18,9 +18,13 @@
         <!-- If you haven't created a route named 'quiz' yet, you can adjust or remove -->
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('summary') }}">Summary</a>
+        <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
         <!-- If you haven't created a route named 'summary' yet, you can adjust or remove -->
       </li>
+      <form class="form-inline my-2 my-lg-0" method="GET" action="{{ url_for('admin_search') }}">
+        <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
       </li>

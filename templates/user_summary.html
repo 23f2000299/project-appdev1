@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}User Summary{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Your Summary</h2>
+  <div class="mb-4">
+    <img src="{{ url_for('static', filename='user_summary.png') }}" 
+    alt="User Summary Chart" class="img-fluid">
+  </div>
+
+  <h4>Scores per Subject</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Total Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in user_summary_data %}
+      <tr>
+        <td>{{ row.subject }}</td>
+        <td>{{ row.score }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+{% endblock %}
