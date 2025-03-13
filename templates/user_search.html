@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container mt-4">
-  <h2>User Search</h2>
+  <h2>Search</h2>
   <form method="GET" action="{{ url_for('user_search') }}" class="form-inline my-2 my-lg-0">
     <input class="form-control mr-sm-2" type="search" name="q" placeholder="Search subjects, quizzes" aria-label="Search" value="{{ query }}">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
@@ -42,7 +42,7 @@
       <p>No quizzes found.</p>
     {% endif %}
   {% elif query %}
-    <p>No results found for "{{ query }}".</p>
+    <p>No results for "{{ query }}".</p>
   {% endif %}
 </div>
 {% endblock %}
