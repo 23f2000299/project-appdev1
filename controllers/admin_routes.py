@@ -9,24 +9,20 @@ from controllers.models import Subject, Chapter, Quiz, Question,User
 def Admin_routes(app):
     @app.route('/admin/dashboard')
     def admin_dashboard():
-        """Admin dashboard: Lists all subjects and provides add/delete."""
-        # Check if user is actually an admin
         if 'user_id' not in session or session.get('role') != 'Admin':
             flash("Access denied.", "danger")
             return redirect(url_for('login'))
-
-        subjects = Subject.query.all()  # Grab all subjects
-        return render_template('admin_dashboard.html', subjects=subjects)
+        sub = Subject.query.all()  # Grab all subjects
+        return render_template('admin_dashboard.html', subjects=sub)
 
     @app.route('/admin/add_subject', methods=['POST'])
     def add_subject():
-        """Handles form submission for creating a new subject."""
         if 'user_id' not in session or session.get('role') != 'Admin':
-            flash("Access denied.", "danger")
+            flash("Access not granted.", "danger")
             return redirect(url_for('login'))
 
         name = request.form['name']
-        description = request.form.get('description', '')
+        description = request.form.get('desc', '')
 
         new_subject = Subject(name=name, description=description)
         db.session.add(new_subject)
@@ -37,7 +33,7 @@ def Admin_routes(app):
     @app.route('/admin/edit_subject/<int:subject_id>', methods=['GET', 'POST'])
     def edit_subject(subject_id):
         if 'user_id' not in session or session.get('role') != 'Admin':
-            flash("Access denied.", "danger")
+            flash("Access not granted.", "danger")
             return redirect(url_for('login'))
         subject = Subject.query.get_or_404(subject_id)
         if request.method == 'POST':
@@ -50,14 +46,13 @@ def Admin_routes(app):
 
     @app.route('/admin/delete_subject/<int:subject_id>', methods=['POST'])
     def delete_subject(subject_id):
-        """Deletes a subject by ID."""
         if 'user_id' not in session or session.get('role') != 'Admin':
             flash("Access denied.", "danger")
             return redirect(url_for('login'))
 
         subject = Subject.query.get_or_404(subject_id)
         if subject:
-            # Delete all chapters related to this subject first
+            # Delete all chapters related to the given  subject first
             Chapter.query.filter_by(subject_id=subject.id).delete()
             db.session.delete(subject)
             db.session.commit()
@@ -87,11 +82,7 @@ def Admin_routes(app):
         chapter_name = request.form['chapter_name']
         chapter_description = request.form.get('chapter_description', '')
 
-        new_chapter = Chapter(
-            name=chapter_name,
-            description=chapter_description,
-            subject_id=subject.id
-        )
+        new_chapter = Chapter(name=chapter_name,description=chapter_description,subject_id=subject.id)
         db.session.add(new_chapter)
         db.session.commit()
         flash("Chapter added successfully!", "success")

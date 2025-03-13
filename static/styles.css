@@ -1,6 +1,4 @@
 /* styles.css */
-
-/* Global Styles */
 body {
     background-color: #DDF2FD;  /* Very light blue background */
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -154,7 +152,7 @@ body {
   padding-top: 10px;
 }
 
-/* Show the form when its ID is targeted in the URL (#edit-chapter-xxx or #edit-question-xxx) */
+/* Show the form when its ID is targeted in the URL*/
 .edit-form:target {
   display: block;
 }

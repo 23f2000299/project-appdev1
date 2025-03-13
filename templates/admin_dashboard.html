@@ -12,6 +12,9 @@
   
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Home</a>
+      </li>
       <!-- Link to quiz.html, summary.html, logout route -->
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('admin_quiz_overview') }}">Quiz</a>
@@ -94,7 +97,7 @@
         </div>
         <div class="form-group">
           <label for="subjectDesc">Number of chapters and description</label>
-          <textarea name="description" id="subjectDesc" class="form-control" rows="3"
+          <textarea name="desc" id="subjectDesc" class="form-control" rows="3"
                     placeholder="Enter subject description"></textarea>
           <small>mention number of chapter in first line and in the second the description</small>
         </div>

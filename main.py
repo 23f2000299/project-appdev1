@@ -3,7 +3,7 @@ from controllers.config import Config
 from controllers.database import db
 from controllers.models import *#to import all the necessary models
 from werkzeug.security import generate_password_hash as hash_pass
-import controllers.auth_route as auth_route  # <-- Import the module
+import controllers.auth_route as auth_route
 
 from controllers.admin_routes import Admin_routes
 from controllers.user_routes import User_routes

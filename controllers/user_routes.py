@@ -1,5 +1,5 @@
 import matplotlib
-matplotlib.use('Agg')  # Non-GUI backend
+matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 import io, base64
 from flask import render_template, session, redirect, url_for, flash, request
@@ -13,40 +13,37 @@ def User_routes(app):
         if 'user_id' not in session:
             flash("Please log in first.", "warning")
             return redirect(url_for('login'))
-        if session.get('role') == 'Admin':
-            flash("Access denied for admin on user dashboard.", "danger")
-            return redirect(url_for('admin_dashboard'))
+        
         today = datetime.now().date()
-        upcoming_quizzes = Quiz.query.filter(Quiz.date_of_quiz >= today).all()
-        return render_template('user_dashboard.html', quizzes=upcoming_quizzes)
+        available_quiz = Quiz.query.filter(Quiz.date_of_quiz >= today).all()
+        return render_template('user_dashboard.html', quizzes=available_quiz)
 
     @app.route('/user/quiz/view/<int:quiz_id>')
     def view_quiz_details(quiz_id):
         if 'user_id' not in session:
-            flash("Please log in first.", "warning")
+            flash("Please log in first!!", "warning")
             return redirect(url_for('login'))
+        if session.get('role') == 'Admin':
+            flash("this is user dashboard!!!!!!", "danger")
+            return redirect(url_for('admin_dashboard'))
         quiz = Quiz.query.get_or_404(quiz_id)
         return render_template('view_quiz.html', quiz=quiz)
     
     @app.route('/user/search') 
     def user_search():
         if 'user_id' not in session:
-            flash("Please log in first.", "warning")
+            flash("Please log in!!!!!!", "warning")
             return redirect(url_for('login'))
         if session.get('role') == 'Admin':
-            flash("Admins cannot access the user search.", "danger")
+            flash("user search not admin search", "danger")
             return redirect(url_for('admin_dashboard'))
         
         query = request.args.get('q', '').strip()
         results = {}
         if query:
             from controllers.models import Subject, Quiz
-            results['subjects'] = Subject.query.filter(
-                Subject.name.ilike(f'%{query}%')
-            ).all()
-            results['quizzes'] = Quiz.query.filter(
-                Quiz.remarks.ilike(f'%{query}%')
-            ).all()
+            results['subjects'] = Subject.query.filter(Subject.name.ilike(f'%{query}%')).all()
+            results['quizzes'] = Quiz.query.filter(Quiz.remarks.ilike(f'%{query}%')).all()
         else:
             results = None
         return render_template('user_search.html', query=query, results=results)
@@ -55,8 +52,9 @@ def User_routes(app):
     @app.route('/user/quiz/start/<int:quiz_id>', methods=['GET', 'POST'])
     def start_quiz(quiz_id):
         if 'user_id' not in session:
-            flash("Please log in first.", "warning")
+            flash("log in first.", "warning")
             return redirect(url_for('login'))
+        user_id = session.get('user_id')
         quiz = Quiz.query.get_or_404(quiz_id)
         existing_score = Score.query.filter_by(user_id=user_id, quiz_id=quiz.id).first()
         if existing_score:
@@ -65,7 +63,6 @@ def User_routes(app):
         if request.method == 'POST':
             score = 0
             total = len(quiz.questions)
-            # Detailed feedback dictionary: key = question.id, value = dict with details
             feedback = {}
             for question in quiz.questions:
                 user_answer = request.form.get(f'question_{question.id}')
@@ -94,7 +91,7 @@ def User_routes(app):
             db.session.add(new_score)
             db.session.commit()
             flash(f"You scored {score} out of {total}", "success")
-            # Pass the score and detailed feedback to the results template
+            # Passing the score and feedback to the results temp
             return render_template('quiz_result.html', quiz=quiz, score=score, total=total, feedback=feedback)
         return render_template('take_quiz.html', quiz=quiz)
 
@@ -104,7 +101,7 @@ def User_routes(app):
             flash("Please log in first.", "warning")
             return redirect(url_for('login'))
         user_id = session.get('user_id')
-        scores = Score.query.filter_by(user_id=user_id).order_by(Score.timestamp.desc()).all()
+        scores = Score.query.filter_by(user_id=user_id).all()
         return render_template('user_scores.html', scores=scores)
 
 
@@ -116,47 +113,38 @@ def User_routes(app):
         if session.get('role') == 'Admin':
             flash("Admins cannot access user summary.", "danger")
             return redirect(url_for('admin_dashboard'))
-
         user_id = session['user_id']
         subjects = Subject.query.all()
 
-        # Data for the chart: total score per subject
+        # we are gettin the data from the tables
         subject_names = []
-        total_scores = []
-        for subj in subjects:
-            sum_score = 0
-            for chap in subj.chapters:
+        total= []
+        for sub in subjects:
+            sum = 0
+            for chap in sub.chapters:
                 for quiz in chap.quizzes:
-                    for s in quiz.scores:
-                        if s.user_id == user_id:
-                            sum_score += s.total_scored
-            subject_names.append(subj.name)
-            total_scores.append(sum_score)
+                    for i in quiz.scores:
+                        if i.user_id == user_id:
+                            sum += i.total_scored
+            subject_names.append(sub.name)
+            total.append(sum)
 
-        # Generate chart, e.g. bar chart
+        # creating a bar graph
         plt.clf()
         fig, ax = plt.subplots(figsize=(6,4))
-        ax.bar(subject_names, total_scores, color='lightgreen')
+        ax.bar(subject_names, total, color='purple')
         ax.set_xlabel("Subjects")
         ax.set_ylabel("Total Score")
-        ax.set_title("Your Scores per Subject")
+        ax.set_title("Scores per Subject")
 
-        user_chart_path = 'static/user_summary.png'
-        plt.savefig(user_chart_path)
+        user_chartpath = 'static/user_summary.png'
+        plt.savefig(user_chartpath)
         plt.close(fig)
 
-        # Data for table if needed
-        # e.g. list of quizzes user attempted
-        # or a simple total
-        # We'll just do subject_names / total_scores in a table
-        user_summary_data = []
+        # Data for table 
+        user_summary = []
         for i, subj_name in enumerate(subject_names):
-            user_summary_data.append({
-                'subject': subj_name,
-                'score': total_scores[i]
-            })
+            user_summary.append({'subject': subj_name,'score': total[i] })
 
-        return render_template('user_summary.html', 
-                               user_chart_path=user_chart_path,
-                               user_summary_data=user_summary_data)
+        return render_template('user_summary.html', user_chart_path=user_chartpath,user_summary_data=user_summary)
 
