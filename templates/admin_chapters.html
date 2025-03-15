@@ -59,12 +59,12 @@
   <h4>Add New Chapter</h4>
   <form method="POST" action="{{ url_for('add_chapter', subject_id=subject.id) }}">
     <div class="form-group">
-      <label for="chapName">Name</label>
-      <input id="chapName" class="form-control" required>
+      <label for="chapter_name">Name</label>
+      <input id="chapter_name" name="chapName" class="form-control" required>
     </div>
     <div class="form-group">
-      <label for="chapDesc">Description</label>
-      <textarea id="chapDesc" class="form-control"></textarea>
+      <label for="chapter_description">Description</label>
+      <textarea id="chapter_description" name="chapDesc" class="form-control"></textarea>
     </div>
     <button type="submit" class="btn btn-success">Save</button>
   </form>

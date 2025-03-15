@@ -9,7 +9,6 @@ class User(db.Model):
     password = db.Column(db.String(60), nullable=False)
     full_name = db.Column(db.String(120), nullable=False)
     qualification = db.Column(db.String(120))
-    dob = db.Column(db.Date)
 
     is_admin = db.Column(db.Boolean, default=False)
      #it has one to many relationship, a user has many scores

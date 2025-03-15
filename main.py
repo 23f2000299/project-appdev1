@@ -1,7 +1,7 @@
 from flask import Flask, render_template, flash, session, redirect, url_for, request
 from controllers.config import Config
 from controllers.database import db
-from controllers.models import *#to import all the necessary models
+from controllers.models import *
 from werkzeug.security import generate_password_hash as hash_pass
 import controllers.auth_route as auth_route
 

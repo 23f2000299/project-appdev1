@@ -79,8 +79,8 @@ def Admin_routes(app):
             return redirect(url_for('login'))
 
         subject = Subject.query.get_or_404(subject_id)
-        chapter_name = request.form['chapter_name']
-        chapter_description = request.form.get('chapter_description', '')
+        chapter_name = request.form.get('chapName','')
+        chapter_description = request.form.get('chapDesc', '')
 
         new_chapter = Chapter(name=chapter_name,description=chapter_description,subject_id=subject.id)
         db.session.add(new_chapter)
@@ -263,6 +263,8 @@ def Admin_routes(app):
             flash("Access denied.", "danger")
             return redirect(url_for('login'))
         quiz = Quiz.query.get_or_404(quiz_id)
+        for score in quiz.scores:
+            db.session.delete(score)
         db.session.delete(quiz)
         db.session.commit()
         flash("Quiz deleted.", "info")
