@@ -1,4 +1,4 @@
-Flask
-Flask-SQLAlchemy
+flask
+flask-SQLAlchemy
 jinja2
 matplotlib
